@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/avaliacoes")
+@RequestMapping("/api/avaliacoes")
+@CrossOrigin("*")
 public class AvaliacaoController {
 
     @Autowired
@@ -20,7 +21,11 @@ public class AvaliacaoController {
     }
 
     @PostMapping
-    public Avaliacao salvar(@RequestBody Avaliacao avaliacao) {
+    public Avaliacao postar(@RequestBody Avaliacao avaliacao) {
+        // Validação simples de estrelas
+        if(avaliacao.getEstrelas() < 1 || avaliacao.getEstrelas() > 5) {
+            throw new RuntimeException("A nota deve ser entre 1 e 5");
+        }
         return repository.save(avaliacao);
     }
 }
