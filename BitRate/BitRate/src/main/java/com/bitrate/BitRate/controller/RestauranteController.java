@@ -1,52 +1,86 @@
 package com.bitrate.BitRate.controller;
 
+import com.bitrate.BitRate.model.Cliente;
 import com.bitrate.BitRate.model.Restaurante;
-import com.bitrate.BitRate.repository.RestauranteRepository;
+import com.bitrate.BitRate.model.Avaliacao;
+import com.bitrate.BitRate.service.RestauranteService;
+import com.bitrate.BitRate.repository.AvaliacaoRepository; // Certifique-se do nome correto aqui
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
-@RestController // Diz que esta classe atende pedidos via URL
-@RequestMapping("/api/restaurantes") // O endereço base (ex: localhost:8080/api/restaurantes)
-@CrossOrigin("*") // LIBERA O ACESSO PARA OS MANOS DO FRONT! (Importante até 12 de junho)
+@Controller
+@RequestMapping("/restaurante")
 public class RestauranteController {
 
-    @Autowired // Traz o seu "Almoxarifado" (Repository) para cá automaticamente
-    private RestauranteRepository repository;
+    @Autowired
+    private RestauranteService restauranteService;
 
-    // 1. LISTAR TODOS (Read)
+    @Autowired
+    private AvaliacaoRepository avaliacaoRepository; // Injetado para salvar novas críticas
+
     @GetMapping
-    public List<Restaurante> listar() {
-        return repository.findAll();
+    public String listarRestaurantes(Model model) {
+        model.addAttribute("restaurantes", restauranteService.listarTodos());
+        return "restaurantes"; 
     }
 
-    // 2. ADICIONAR NOVO (Create)
-    @PostMapping
-    public Restaurante adicionar(@RequestBody Restaurante restaurante) {
-        return repository.save(restaurante);
+    @GetMapping("/novo")
+    public String exibirFormularioCadastro(Model model, HttpSession session) {
+        if (session.getAttribute("usuarioLogado") == null) return "redirect:/";
+        model.addAttribute("restaurante", new Restaurante());
+        return "cadastro-restaurante"; 
     }
 
-    // 3. EDITAR (Update)
-    @PutMapping("/{id}")
-    public Restaurante editar(@PathVariable Long id, @RequestBody Restaurante restauranteAtualizado) {
-        // O .map ajuda a encontrar o restaurante pelo ID. Se não achar, não faz nada.
-        return repository.findById(id)
-                .map(restaurante -> {
-                    restaurante.setNome(restauranteAtualizado.getNome());
-                    restaurante.setCozinha(restauranteAtualizado.getCozinha());
-                    restaurante.setEspecialidade(restauranteAtualizado.getEspecialidade());
-                    restaurante.setEndereco(restauranteAtualizado.getEndereco());
-                    return repository.save(restaurante);
-                }).orElseGet(() -> {
-                    restauranteAtualizado.setId(id);
-                    return repository.save(restauranteAtualizado);
-                });
+    @PostMapping("/novo")
+    public String salvarRestaurante(@ModelAttribute Restaurante restaurante) {
+        restauranteService.salvar(restaurante);
+        return "redirect:/dashboard"; // Redireciona para a dashboard principal
     }
 
-    // 4. DELETAR (Delete)
-    @DeleteMapping("/{id}")
-    public void excluir(@PathVariable Long id) {
-        repository.deleteById(id);
+    @GetMapping("/{id}")
+    public String detalhesRestaurante(@PathVariable Long id, Model model, HttpSession session) {
+        Cliente logado = (Cliente) session.getAttribute("usuarioLogado");
+        if (logado == null) return "redirect:/";
+
+        Restaurante restaurante = restauranteService.buscarPorId(id);
+        if (restaurante != null) {
+            model.addAttribute("restaurante", restaurante);
+            model.addAttribute("avaliacoes", restaurante.getAvaliacoes());
+            model.addAttribute("usuario", logado); // Para exibir quem está avaliando
+            return "detalhes-restaurante";
+        }
+        return "redirect:/dashboard";
+    }
+
+    // NOVO MÉTODO: Processa a avaliação de qualquer usuário
+    @PostMapping("/avaliar")
+    public String salvarAvaliacao(@RequestParam Long idRestaurante, 
+                                  @RequestParam int nota, 
+                                  @RequestParam String comentario, 
+                                  HttpSession session) {
+        
+        Cliente logado = (Cliente) session.getAttribute("usuarioLogado");
+        if (logado == null) return "redirect:/";
+
+        Restaurante restaurante = restauranteService.buscarPorId(idRestaurante);
+        
+        if (restaurante != null) {
+            Avaliacao nova = new Avaliacao();
+            nova.setNota(nota);
+            nova.setTextoAvaliacao(comentario);
+            nova.setDataPublicacao(LocalDateTime.now());
+            nova.setCliente(logado);
+            nova.setRestaurante(restaurante);
+
+            avaliacaoRepository.save(nova); 
+        }
+
+        // Recarrega a página de detalhes do próprio restaurante
+        return "redirect:/restaurante/" + idRestaurante;
     }
 }

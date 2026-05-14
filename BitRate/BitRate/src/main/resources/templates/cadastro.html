@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>BitRate - Cadastro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary-color: #fca311; --secondary-color: #14213d; --bg-color: #f8f9fa; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-color); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 450px; }
+        h1 { color: var(--secondary-color); text-align: center; margin-bottom: 5px; }
+        h1 span { color: var(--primary-color); }
+        
+        /* Estilo da Mensagem de Erro */
+        .alert-error { 
+            background-color: #ffe6e6; 
+            color: #d93025; 
+            padding: 12px; 
+            border-radius: 8px; 
+            margin-bottom: 20px; 
+            border: 1px solid #f5c2c7; 
+            text-align: center; 
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; color: var(--secondary-color); }
+        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 12px; background: var(--secondary-color); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn:hover { background: #000; }
+        .back-link { display: block; text-align: center; margin-top: 15px; color: #666; text-decoration: none; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bit<span>Rate</span></h1>
+        <p style="text-align:center; margin-bottom: 25px;">Crie sua conta para começar a avaliar</p>
+        
+        <div th:if="${mensagemErro}" class="alert-error">
+            <i class="fas fa-exclamation-triangle"></i> 
+            <span th:text="${mensagemErro}"></span>
+        </div>
+
+        <form th:action="@{/salvar-usuario}" th:object="${cliente}" method="post">
+            <div class="form-group">
+                <label>Nome Completo</label>
+                <input type="text" th:field="*{nome}" placeholder="Seu nome" required>
+            </div>
+            <div class="form-group">
+                <label>CPF</label>
+                <input type="text" th:field="*{cpf}" placeholder="000.000.000-00" required>
+            </div>
+            <div class="form-group">
+                <label>E-mail</label>
+                <input type="email" th:field="*{email}" placeholder="seu@email.com" required>
+            </div>
+            <div class="form-group">
+                <label>Senha</label>
+                <input type="password" th:field="*{senha}" placeholder="Crie uma senha" required>
+            </div>
+            <button type="submit" class="btn">Finalizar Cadastro</button>
+        </form>
+        <a href="/" class="back-link">Já tenho conta? Voltar ao login</a>
+    </div>
+</body>
+</html>

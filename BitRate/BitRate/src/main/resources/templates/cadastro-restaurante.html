@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BitRate - Novo Restaurante</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #fca311;
+            --secondary-color: #14213d;
+            --bg-color: #f1f3f6;
+            --text-dark: #14213d;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: var(--white);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            margin: 20px;
+        }
+
+        h2 {
+            color: var(--secondary-color);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+        }
+
+        h2 span { color: var(--primary-color); }
+
+        .form-section-title {
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+            margin: 25px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--bg-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group { margin-bottom: 20px; }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #edf0f5;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: #fffcf5;
+        }
+
+        textarea { resize: vertical; min-height: 80px; }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn-save {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
+        }
+
+        .btn-save:hover {
+            background-color: #000;
+            transform: translateY(-2px);
+        }
+
+        .btn-cancel {
+            text-align: center;
+            color: #888;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-cancel:hover { color: #555; }
+
+        hr { border: none; border-top: 1px solid #eee; margin: 30px 0; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Bit<span>Rate</span></h2>
+    <p style="text-align: center; color: #666; margin-top: -20px; margin-bottom: 30px;">Cadastrar Novo Restaurante</p>
+
+    <div th:if="${mensagemErro}" 
+         style="background-color: #ffe6e6; color: #d93025; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #f5c2c7; text-align: center; font-weight: bold;">
+        <i class="fas fa-exclamation-circle"></i> 
+        <span th:text="${mensagemErro}"></span>
+    </div>
+
+    <form th:action="@{/dashboard/salvar}" th:object="${restaurante}" method="post">
+        
+        <div class="form-group">
+            <label><i class="fas fa-store"></i> Nome do Restaurante</label>
+            <input type="text" th:field="*{nome}" placeholder="Ex: Pizzaria da Vila" required>
+        </div>
+
+        <div class="form-group">
+            <label><i class="fas fa-map-marker-alt"></i> Endereço Completo</label>
+            <input type="text" th:field="*{endereco}" placeholder="Rua, Número, Bairro" required>
+        </div>
+
+        <div class="form-group">
+            <label><i class="fas fa-image"></i> Link da Foto (Opcional)</label>
+            <input type="text" th:field="*{foto}" placeholder="https://link-da-imagem.jpg">
+        </div>
+
+        <div class="form-section-title">
+            <i class="fas fa-star" style="color: var(--primary-color);"></i>
+            Sua Avaliação (Opcional)
+        </div>
+
+        <div class="form-group">
+            <label>Nota de 1 a 5</label>
+            <select name="nota">
+                <option value="">Não avaliar agora</option>
+                <option value="5">5 - Excelente</option>
+                <option value="4">4 - Muito Bom</option>
+                <option value="3">3 - Bom</option>
+                <option value="2">2 - Regular</option>
+                <option value="1">1 - Ruim</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Seu Comentário</label>
+            <textarea name="comentario" placeholder="Conte sua experiência..."></textarea>
+        </div>
+
+        <div class="btn-group">
+            <button type="submit" class="btn-save">Salvar Restaurante</button>
+            <a href="/dashboard" class="btn-cancel">Cancelar e Voltar</a>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BitRate - Meu Perfil</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #fca311;
+            --secondary-color: #14213d;
+            --bg-color: #f1f3f6;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            color: #333;
+        }
+
+        /* Navbar Simples */
+        .navbar {
+            background-color: var(--secondary-color);
+            padding: 15px 5%;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .navbar a:hover { color: var(--primary-color); }
+
+        /* Cabeçalho do Perfil */
+        .profile-header {
+            background: var(--white);
+            padding: 50px 5%;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .avatar-circle {
+            width: 120px;
+            height: 120px;
+            background: var(--bg-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px;
+            font-size: 4rem;
+            color: var(--secondary-color);
+            border: 4px solid var(--primary-color);
+        }
+
+        .profile-info h1 { margin: 10px 0; color: var(--secondary-color); }
+        .profile-info p { margin: 5px 0; color: #666; }
+
+        /* Conteúdo Principal */
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            border-left: 5px solid var(--primary-color);
+            padding-left: 15px;
+            margin-bottom: 25px;
+        }
+
+        /* Cards de Avaliação */
+        .review-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-left: 5px solid #ddd;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .restaurant-name {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+        }
+
+        .stars { color: var(--primary-color); font-size: 0.9rem; }
+
+        .review-text { font-style: italic; color: #444; line-height: 1.6; }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar" style="display: flex; justify-content: space-between; align-items: center;">
+        <a href="/dashboard"><i class="fas fa-arrow-left"></i> Voltar ao Início</a>
+        
+        <a href="/logout" style="color: #ff4d4d; font-size: 0.9rem;">
+            <i class="fas fa-sign-out-alt"></i> Sair da Conta
+        </a>
+    </nav>
+
+    <div class="profile-header" th:if="${usuario != null}">
+        <div class="avatar-circle">
+            <i class="fas fa-user"></i>
+        </div>
+        <div class="profile-info">
+            <h1 th:text="${usuario.nome}">Nome do Usuário</h1>
+            <p><i class="fas fa-envelope"></i> <span th:text="${usuario.email}">email@exemplo.com</span></p>
+            <p><i class="fas fa-id-card"></i> CPF: <span th:text="${usuario.cpf}">000.000.000-00</span></p>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 class="section-title">Minhas Avaliações</h2>
+
+        <div th:if="${usuario != null and usuario.avaliacoes != null and !usuario.avaliacoes.isEmpty()}">
+            <div class="review-card" th:each="avaliacao : ${usuario.avaliacoes}">
+                <div class="review-header">
+                    <span class="restaurant-name" th:text="${avaliacao.restaurante.nome}">Nome do Restaurante</span>
+                    <div class="stars">
+                        <span th:if="${avaliacao.nota > 0}">
+                             <span th:each="i : ${#numbers.sequence(1, avaliacao.nota)}"><i class="fas fa-star"></i></span>
+                        </span>
+                    </div>
+                </div>
+                <p class="review-text" th:text="${avaliacao.textoAvaliacao}">"O comentário da avaliação aparece aqui."</p>
+                <p style="font-size: 0.8rem; color: #aaa;">
+                    Avaliado em: <span th:text="${#temporals.format(avaliacao.dataPublicacao, 'dd/MM/yyyy')}">14/05/2026</span>
+                </p>
+            </div>
+        </div>
+
+        <div class="empty-state" th:if="${usuario == null or usuario.avaliacoes == null or usuario.avaliacoes.isEmpty()}">
+            <i class="fas fa-comment-slash" style="font-size: 3rem; margin-bottom: 15px; display: block;"></i>
+            <p>Você ainda não avaliou nenhum restaurante.</p>
+            <a href="/dashboard" style="color: var(--primary-color); font-weight: bold;">Explorar agora</a>
+        </div>
+    </div>
+
+</body>
+</html>

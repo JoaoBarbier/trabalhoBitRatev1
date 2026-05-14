@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Avaliar - BitRate</title>
+</head>
+<body>
+    <h1>Escrever Crítica</h1>
+    
+    <form th:action="@{/avaliacoes/nova}" th:object="${avaliacao}" method="post">
+        
+        <input type="hidden" name="restaurante.idRestaurante" th:value="${restauranteId}" />
+        
+        <label>Sua Nota (1 a 5):</label>
+        <input type="number" th:field="*{nota}" min="1" max="5" required /><br><br>
+        
+        <label>Sua Crítica:</label><br>
+        <textarea th:field="*{textoAvaliacao}" rows="5" cols="40" required></textarea><br><br>
+        
+        <button type="submit">Publicar Avaliação</button>
+    </form>
+    
+    <br>
+    <a th:href="@{/restaurantes/{id}(id=${restauranteId})}">Cancelar e Voltar</a>
+</body>
+</html>

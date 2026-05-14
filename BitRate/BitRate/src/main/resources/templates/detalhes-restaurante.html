@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>BitRate - Detalhes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #fca311; --secondary: #14213d; --bg: #f1f3f6; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; }
+        .nav { background: var(--secondary); padding: 15px; display: flex; justify-content: space-between; }
+        .container { max-width: 1000px; margin: 20px auto; padding: 20px; }
+        .restaurante-header { background: white; padding: 30px; border-radius: 15px; display: flex; gap: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .restaurante-header img { width: 300px; height: 200px; border-radius: 10px; object-fit: cover; }
+        
+        .form-avaliacao { background: white; padding: 25px; border-radius: 15px; margin-top: 30px; border-top: 5px solid var(--primary); }
+        .review-card { background: white; padding: 20px; border-radius: 10px; margin-top: 20px; border-left: 5px solid var(--primary); }
+        
+        .user-feedback { background: #f8f9fa; padding: 10px; margin-top: 10px; border-radius: 5px; font-size: 0.9rem; }
+        .btn-rate-review { background: var(--secondary); color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; transition: 0.3s; }
+        .btn-rate-review:hover { background: #000; }
+        
+        select, textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/dashboard" style="color:white; text-decoration:none;"><i class="fas fa-arrow-left"></i> Voltar</a>
+        <span style="color: white;">Olá, <span th:text="${session.usuarioLogado.nome}">Usuário</span></span>
+    </div>
+
+    <div class="container">
+        <div class="restaurante-header">
+            <img th:src="${restaurante.foto != null ? '/img/' + restaurante.foto : 'https://via.placeholder.com/300x200'}" alt="Foto">
+            <div>
+                <h1 th:text="${restaurante.nome}">Nome</h1>
+                <p><i class="fas fa-map-marker-alt"></i> <span th:text="${restaurante.endereco}"></span></p>
+                <h2 style="color: var(--primary)">
+                    <i class="fas fa-star"></i> 
+                    <span th:text="${restaurante.getMediaNotas()}">0.0</span>
+                </h2>
+            </div>
+        </div>
+
+        <div class="form-avaliacao">
+            <h3><i class="fas fa-pen-fancy"></i> Deixe sua nota</h3>
+            <form th:action="@{/restaurante/avaliar}" method="post">
+                <input type="hidden" name="idRestaurante" th:value="${restaurante.idRestaurante}">
+                
+                <div style="display: flex; gap: 20px; margin-bottom: 15px;">
+                    <div style="flex: 1;">
+                        <label>Sua nota (1 a 5):</label>
+                        <select name="nota" required>
+                            <option value="5">5 Estrelas ★★★★★</option>
+                            <option value="4">4 Estrelas ★★★★</option>
+                            <option value="3">3 Estrelas ★★★</option>
+                            <option value="2">2 Estrelas ★★</option>
+                            <option value="1">1 Estrela ★</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label>Seu comentário:</label>
+                    <textarea name="comentario" rows="3" placeholder="O que você achou deste lugar?" required></textarea>
+                </div>
+
+                <button type="submit" class="btn-rate-review">Publicar Avaliação</button>
+            </form>
+        </div>
+
+        <h3 style="margin-top: 40px;">Avaliações da Comunidade</h3>
+
+        <div th:each="av : ${avaliacoes}" class="review-card">
+            <div style="display: flex; justify-content: space-between;">
+                <strong th:text="${av.cliente.nome}">Usuário</strong>
+                <span style="color: var(--primary)">
+                    <th:block th:if="${av.nota > 0}">
+                        <i class="fas fa-star" th:each="i : ${#numbers.sequence(1, av.nota)}"></i>
+                    </th:block>
+                </span>
+            </div>
+            <p th:text="${av.textoAvaliacao}">Comentário...</p>
+            <small>
+                <i class="far fa-calendar-alt"></i> 
+                <span th:text="${#temporals.format(av.dataPublicacao, 'dd/MM/yyyy')}"></span>
+            </small>
+
+            <div class="user-feedback">
+                <span>Esta avaliação foi útil?</span>
+                <form th:action="@{/avaliacao/feedback}" method="post" style="display: inline; margin-left: 10px;">
+                    <input type="hidden" name="idAvaliacao" th:value="${av.idCritica}">
+                    <select name="notaFeedback" style="width: auto; padding: 2px;">
+                        <option value="5">Sim</option>
+                        <option value="1">Não</option>
+                    </select>
+                    <button class="btn-rate-review" style="padding: 2px 8px; font-size: 0.8rem;">Enviar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

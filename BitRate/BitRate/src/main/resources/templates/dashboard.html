@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BitRate - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #fca311; /* Laranja */
+            --secondary-color: #14213d; /* Azul Escuro */
+            --bg-color: #f1f3f6;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo span { color: var(--primary-color); }
+
+        .profile-icon {
+            font-size: 1.5rem;
+            color: white;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .profile-icon:hover { color: var(--primary-color); }
+
+        /* Barra de Ações */
+        .actions-bar {
+            padding: 30px 5% 10px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-add {
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
+        }
+
+        .btn-add:hover {
+            background-color: #e59400;
+            transform: scale(1.05);
+        }
+
+        /* Grid de Restaurantes */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 20px 5% 50px 5%;
+        }
+
+        /* Card */
+        .restaurant-card {
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+
+        .restaurant-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .restaurant-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background-color: #ddd;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .restaurant-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+            margin: 0;
+        }
+
+        .rating {
+            background: #fff3e0;
+            color: var(--primary-color);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .btn-more {
+            display: block;
+            text-align: center;
+            background: #f8f9fa;
+            color: var(--secondary-color);
+            padding: 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-top: 15px;
+            font-weight: 600;
+            border: 1px solid #eee;
+            transition: 0.3s;
+        }
+
+        .btn-more:hover {
+            background: var(--secondary-color);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="/dashboard" class="logo">Bit<span>Rate</span></a>
+    <a href="/perfil" class="profile-icon" style="text-decoration: none; color: white;">
+        <i class="fas fa-user-circle"></i>
+    </a>
+</nav>
+
+    <div class="actions-bar">
+        <h2>Restaurantes em Destaque</h2>
+        <a href="/dashboard/novo" class="btn-add">
+            <i class="fas fa-plus"></i> Adicionar Restaurante
+        </a>
+    </div>
+
+    <div class="grid-container">
+        <div class="restaurant-card" th:each="r : ${restaurantes}">
+            <img class="restaurant-img" 
+                 th:src="${r.foto != null ? '/img/' + r.foto : 'https://via.placeholder.com/300x180?text=Sem+Foto'}" 
+                 alt="Foto do Restaurante">
+            
+            <div class="card-content">
+                <div class="card-header">
+                    <h3 class="restaurant-name" th:text="${r.nome}">Nome do Restaurante</h3>
+                    <div class="rating">
+                        <i class="fas fa-star"></i> 
+                        <span th:text="${r.mediaNotas != null ? r.mediaNotas : '0.0'}">4.8</span>
+                    </div>
+                </div>
+                <p style="color: #777; font-size: 0.9rem;">
+                    <i class="fas fa-map-marker-alt"></i> <span th:text="${r.endereco}">Endereço aqui</span>
+                </p>
+                <a th:href="@{/restaurante/{id}(id=${r.idRestaurante})}" class="btn-more">
+                    Ver detalhes
+                </a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

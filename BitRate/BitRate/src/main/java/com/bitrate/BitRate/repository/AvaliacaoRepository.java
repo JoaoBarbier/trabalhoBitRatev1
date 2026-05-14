@@ -2,8 +2,12 @@ package com.bitrate.BitRate.repository;
 
 import com.bitrate.BitRate.model.Avaliacao;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import java.util.List;
 
-@Repository
 public interface AvaliacaoRepository extends JpaRepository<Avaliacao, Long> {
+    // Busca todas as críticas feitas em um restaurante específico
+    List<Avaliacao> findByRestauranteIdRestaurante(Long idRestaurante);
+
+    // Busca todas as críticas escritas por um cliente específico
+    List<Avaliacao> findByClienteIdCliente(Long idCliente);
 }
