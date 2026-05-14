@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Restaurantes - BitRate</title>
+</head>
+<body>
+    <h1>Lista de Restaurantes</h1>
+    
+    <a th:href="@{/restaurantes/novo}">+ Cadastrar Novo Restaurante</a>
+    <br><br>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Endereço</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="restaurante : ${restaurantes}">
+                <td th:text="${restaurante.nome}">Nome do Local</td>
+                <td th:text="${restaurante.endereco}">Endereço do Local</td>
+                <td>
+                    <a th:href="@{/restaurantes/{id}(id=${restaurante.idRestaurante})}">Detalhes e Avaliações</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+    <a th:href="@{/}">Voltar para o Início</a>
+</body>
+</html>
