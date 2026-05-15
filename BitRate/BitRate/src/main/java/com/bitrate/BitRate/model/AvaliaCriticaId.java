@@ -4,11 +4,14 @@ import jakarta.persistence.Embeddable;
 import lombok.*;
 import java.io.Serializable;
 
+// Futuras Implementações
 @Embeddable
-@Getter @Setter
+@Data
 @NoArgsConstructor @AllArgsConstructor
 @EqualsAndHashCode
 public class AvaliaCriticaId implements Serializable {
+
     private Long idCliente;
+
     private Long idCritica;
 }

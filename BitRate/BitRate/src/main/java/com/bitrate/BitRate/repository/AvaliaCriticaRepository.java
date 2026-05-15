@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AvaliaCriticaRepository extends JpaRepository<Avaliacao, Long> {
+    //Implementação Futura
 }

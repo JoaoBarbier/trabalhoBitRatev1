@@ -1,13 +1,13 @@
 package com.bitrate.BitRate.model;
 
-import java.time.LocalDateTime;
-
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
-@Table(name = "Critica")
-@Getter @Setter
+@Table(name = "Critica") //Mudar nome para Avaliacao no Futuro
+@Data
 @NoArgsConstructor @AllArgsConstructor
 public class Avaliacao {
 
@@ -25,10 +25,10 @@ public class Avaliacao {
     private LocalDateTime dataPublicacao;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_cliente") // Chave Estrangeira 
+    @JoinColumn(name = "id_cliente")
     private Cliente cliente;
 
     @ManyToOne
-    @JoinColumn(name = "id_restaurante") // Chave Estrangeira 
+    @JoinColumn(name = "id_restaurante")
     private Restaurante restaurante;
 }

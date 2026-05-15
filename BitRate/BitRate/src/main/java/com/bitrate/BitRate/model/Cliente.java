@@ -2,12 +2,14 @@ package com.bitrate.BitRate.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.LocalDate;
 import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "clientes")
-@Getter @Setter
+@Data
 @NoArgsConstructor @AllArgsConstructor
 public class Cliente {
 
@@ -16,20 +18,22 @@ public class Cliente {
     private Long idCliente;
 
     private String nome;
+
     private String foto;
 
-    @Column(unique = true, nullable = false) // CPF Único
+    @Column(unique = true, nullable = false)
     private String cpf;
 
     private LocalDate dataNascimento;
 
-    @Column(unique = true, nullable = false) // E-mail Único
+    @Column(unique = true, nullable = false) 
     private String email;
 
     private String senha;
+
     private String tipo;
 
-    // Relacionamentos mantidos...
+    // Futuras Implementações
     @ManyToMany
     @JoinTable(
         name = "restaurante_favorito",
@@ -38,6 +42,7 @@ public class Cliente {
     )
     private Set<Restaurante> restaurantesFavoritos;
 
+    // Futuras Implementações
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private java.util.List<Avaliacao> avaliacoes;
+    private List<Avaliacao> avaliacoes;
 }

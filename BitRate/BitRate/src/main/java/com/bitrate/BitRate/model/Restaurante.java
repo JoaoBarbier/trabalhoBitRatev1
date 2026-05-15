@@ -1,16 +1,14 @@
 package com.bitrate.BitRate.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 import java.util.List;
 
 @Entity
 @Table(name = "Restaurante")
-@Data                // Gera Getters, Setters, toString, equals e hashCode
-@NoArgsConstructor   // Gera o construtor vazio (obrigatório para o Hibernate)
-@AllArgsConstructor  // Gera um construtor com todos os campos
+@Data
+@NoArgsConstructor @AllArgsConstructor
 public class Restaurante {
 
     @Id
@@ -20,14 +18,19 @@ public class Restaurante {
     @Column(nullable = false)
     private String nome;
 
+    @Column(nullable = false)
     private String endereco;
 
     private double notaMedia;
 
     private String foto;
 
-    // No Model Restaurante.java
-    @OneToMany(mappedBy = "restaurante", fetch = FetchType.EAGER) // Adicione isso!
+    /**
+     * Relacionamento: Um restaurante possui muitas avaliações.
+     * mappedBy: Indica que o campo "restaurante" na classe Avaliacao é o dono da relação.
+     * FetchType.EAGER: Carrega as avaliações automaticamente sempre que buscar um restaurante.
+     */
+    @OneToMany(mappedBy = "restaurante", fetch = FetchType.EAGER)
     private List<Avaliacao> avaliacoes;
 
     public double getMediaNotas() {
