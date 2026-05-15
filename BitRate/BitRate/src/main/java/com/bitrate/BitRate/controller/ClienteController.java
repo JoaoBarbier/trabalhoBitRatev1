@@ -17,7 +17,6 @@ public class ClienteController {
     @Autowired
     private ClienteService clienteService;
 
-    // Futuras Implementações
     @GetMapping("/{id}")
     public String verPerfil(@PathVariable Long id, Model model) {
         Cliente cliente = clienteService.buscarPorId(id);

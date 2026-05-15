@@ -62,7 +62,7 @@ public class RestauranteController {
         return "redirect:/dashboard";
     }
 
-    // Futuras Implementações
+    // Avaliar Restaurante
     @PostMapping("/avaliar")
     public String salvarAvaliacao(@RequestParam Long idRestaurante, 
                                   @RequestParam int nota, 
