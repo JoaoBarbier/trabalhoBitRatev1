@@ -4,8 +4,10 @@ import com.bitrate.BitRate.model.Cliente;
 import com.bitrate.BitRate.model.Restaurante;
 import com.bitrate.BitRate.model.Avaliacao;
 import com.bitrate.BitRate.service.RestauranteService;
-import com.bitrate.BitRate.repository.AvaliacaoRepository; // Certifique-se do nome correto aqui
+import com.bitrate.BitRate.repository.AvaliacaoRepository;
+
 import jakarta.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,14 +23,16 @@ public class RestauranteController {
     private RestauranteService restauranteService;
 
     @Autowired
-    private AvaliacaoRepository avaliacaoRepository; // Injetado para salvar novas críticas
+    private AvaliacaoRepository avaliacaoRepository;
 
+    // Lista com todos Restaurantes
     @GetMapping
     public String listarRestaurantes(Model model) {
         model.addAttribute("restaurantes", restauranteService.listarTodos());
         return "restaurantes"; 
     }
 
+    // Cadastrar Novos Restaurantes
     @GetMapping("/novo")
     public String exibirFormularioCadastro(Model model, HttpSession session) {
         if (session.getAttribute("usuarioLogado") == null) return "redirect:/";
@@ -39,9 +43,10 @@ public class RestauranteController {
     @PostMapping("/novo")
     public String salvarRestaurante(@ModelAttribute Restaurante restaurante) {
         restauranteService.salvar(restaurante);
-        return "redirect:/dashboard"; // Redireciona para a dashboard principal
+        return "redirect:/dashboard";
     }
 
+    // Ver Restaurantes Especificos
     @GetMapping("/{id}")
     public String detalhesRestaurante(@PathVariable Long id, Model model, HttpSession session) {
         Cliente logado = (Cliente) session.getAttribute("usuarioLogado");
@@ -51,13 +56,13 @@ public class RestauranteController {
         if (restaurante != null) {
             model.addAttribute("restaurante", restaurante);
             model.addAttribute("avaliacoes", restaurante.getAvaliacoes());
-            model.addAttribute("usuario", logado); // Para exibir quem está avaliando
+            model.addAttribute("usuario", logado);
             return "detalhes-restaurante";
         }
         return "redirect:/dashboard";
     }
 
-    // NOVO MÉTODO: Processa a avaliação de qualquer usuário
+    // Futuras Implementações
     @PostMapping("/avaliar")
     public String salvarAvaliacao(@RequestParam Long idRestaurante, 
                                   @RequestParam int nota, 
@@ -80,7 +85,6 @@ public class RestauranteController {
             avaliacaoRepository.save(nova); 
         }
 
-        // Recarrega a página de detalhes do próprio restaurante
         return "redirect:/restaurante/" + idRestaurante;
     }
 }
