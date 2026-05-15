@@ -8,5 +8,4 @@ import org.springframework.stereotype.Repository;
 public interface RestauranteRepository extends JpaRepository<Restaurante, Long> {
 
     Restaurante findByNomeAndEndereco(String nome, String endereco);
-
 }
